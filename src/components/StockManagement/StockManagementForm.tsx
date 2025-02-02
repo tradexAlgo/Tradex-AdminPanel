@@ -6,8 +6,8 @@ import Checkbox from "../../common/components/Checkbox";
 import SelectInput from "../../common/components/Select";
 import { addNotification } from "../../store/actions/notifications.action";
 import { IStateType, IProductState } from "../../store/models/root.interface";
-import { editProduct, clearSelectedProduct, setModificationState, addProduct } from "../../store/actions/products.action";
-import { OnChangeModel, IProductFormState } from "../../common/types/Form.types";
+import { editProduct } from "../../store/actions/products.action";
+import { OnChangeModel } from "../../common/types/Form.types";
 
 // Define the type for form state
 interface FormField {
@@ -21,7 +21,6 @@ interface FormState {
 
 const StockManagementForm = (props: any): JSX.Element => {
   const dispatch: Dispatch<any> = useDispatch();
-  const products: IProductState | null = useSelector((state: IStateType) => state.products);
   let stock: any = props.SelectedUser;
 
   if (!stock) {
@@ -68,36 +67,33 @@ const StockManagementForm = (props: any): JSX.Element => {
     }));
   }
 
-  function saveStock(e: FormEvent<HTMLFormElement>): void {
+  const saveStock = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    // if (isFormInvalid()) {
-    //   return;
-    // }
     let saveStockFn: Function = editProduct;
     saveForm(formState, saveStockFn);
   }
 
-  async function saveForm(formState: FormState, saveFn: Function): Promise<void> {
+  async function saveForm(formState: FormState, saveStockFn: Function): Promise<void> {
     if (stock) {
       try {
         const url = `https://backend-tradex.onrender.com/admin/stocks/${stock._id}`;
-
-        const params = new URLSearchParams();
-        Object.entries(formState).forEach(([key, field]) => {
-          params.append(key, String(field.value));
-        });
-
+  
+        // Convert formState to a plain object with only values
+        const bodyData = Object.fromEntries(
+          Object.entries(formState).map(([key, field]) => [key, field.value])
+        );
+  
         const response = await fetch(url, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
           },
-          body: params.toString(),
+          body: JSON.stringify(bodyData), // Send JSON data
         });
-
+  
         if (response.ok) {
-          props.onHide()
-          props.callAPIUpdateData()
+          props.onHide();
+          props.callAPIUpdateData();
           dispatch(addNotification("Stock updated", `Stock ${formState.stockName.value} updated successfully`));
         } else {
           throw new Error("Failed to update stock");
@@ -107,10 +103,6 @@ const StockManagementForm = (props: any): JSX.Element => {
         dispatch(addNotification("Error", "Failed to update stock"));
       }
     }
-  }
-
-  function cancelForm(): void {
-    // Implement cancel logic here
   }
 
   function getDisabledClass(): string {
@@ -139,7 +131,7 @@ const StockManagementForm = (props: any): JSX.Element => {
                     onChange={hasFormValueChanged}
                     required={true}
                     label="Stock Name"
-                    placeholder="Stock Name"
+                    placeholder="Enter Stock Name"
                   />
                 </div>
                 <div className="form-group col-md-6">
@@ -150,7 +142,7 @@ const StockManagementForm = (props: any): JSX.Element => {
                     onChange={hasFormValueChanged}
                     required={true}
                     label="Symbol"
-                    placeholder="Symbol"
+                    placeholder="Enter Symbol"
                   />
                 </div>
               </div>
@@ -199,8 +191,6 @@ const StockManagementForm = (props: any): JSX.Element => {
                     field="quantity"
                     onChange={hasFormValueChanged}
                     label="Quantity"
-                    // max={10000}
-                    // min={0}
                   />
                 </div>
               </div>
@@ -213,8 +203,6 @@ const StockManagementForm = (props: any): JSX.Element => {
                     field="stockPrice"
                     onChange={hasFormValueChanged}
                     label="Stock Price"
-                    // max={10000}
-                    // min={0}
                   />
                 </div>
                 <div className="form-group col-md-6">
@@ -224,8 +212,6 @@ const StockManagementForm = (props: any): JSX.Element => {
                     field="netProfitAndLoss"
                     onChange={hasFormValueChanged}
                     label="Net Profit & Loss"
-                    // max={1000000}
-                    // min={-1000000}
                   />
                 </div>
               </div>
@@ -239,7 +225,7 @@ const StockManagementForm = (props: any): JSX.Element => {
                     onChange={hasFormValueChanged}
                     required={true}
                     label="Buy Date"
-                    placeholder="Buy Date"
+                    placeholder="Enter Buy Date"
                     type="datetime-local"
                   />
                 </div>

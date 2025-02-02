@@ -1,0 +1,125 @@
+/* Modal Overlay */
+.user-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 400px;
+  max-width: 90%;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Form Styles */
+.user-form h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 22px;
+  color: #333;
+}
+
+.user-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-form label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+.user-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.user-form input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Password Input with Icon */
+.password-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input input {
+  flex: 1;
+}
+
+.password-toggle {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 10px;
+  bottom: 1px;
+  cursor: pointer;
+  color: #555;
+  font-size: 16px;
+}
+
+.password-toggle:hover {
+  color: #007bff;
+}
+
+/* Buttons */
+.user-form button {
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+/* Mobile Responsive */
+@media (max-width: 500px) {
+  .user-form {
+    width: 90%;
+    padding: 20px;
+  }
+}

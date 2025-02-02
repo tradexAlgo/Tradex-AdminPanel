@@ -6,28 +6,28 @@ import Checkbox from "../../common/components/Checkbox";
 import { addNotification } from "../../store/actions/notifications.action";
 
 interface IUserFormState {
-  role: { error: string, value: string };
-  email: { error: string, value: string };
-  fullName: { error: string, value: string };
-  password: { error: string, value: string };
-  wallet: { error: string, value: number };
-  overallProfit: { error: string, value: number };
-  todayProfit: { error: string, value: number };
-  userPicture: { error: string, value: string };
-  totalInvested: { error: string, value: number };
-  otp: { error: string, value: string };
-  isProfileComplete: { error: string, value: boolean };
-  currency: { error: string, value: string };
-  joinedOn: { error: string, value: string };
-  profileStatus: { error: string, value: string };
-  phoneNumber: { error: string, value: string };
-  isPhoneNumberVerified: { error: string, value: boolean };
+  role: { error: string; value: string };
+  email: { error: string; value: string };
+  fullName: { error: string; value: string };
+  password: { error: string; value: string };
+  wallet: { error: string; value: number };
+  overallProfit: { error: string; value: number };
+  todayProfit: { error: string; value: number };
+  userPicture: { error: string; value: string };
+  totalInvested: { error: string; value: number };
+  otp: { error: string; value: string };
+  isProfileComplete: { error: string; value: boolean };
+  currency: { error: string; value: string };
+  joinedOn: { error: string; value: string };
+  profileStatus: { error: string; value: string };
+  phoneNumber: { error: string; value: string };
+  isPhoneNumberVerified: { error: string; value: boolean };
 }
 
 const UserManagementForm = (props: any): JSX.Element => {
   const dispatch: Dispatch<any> = useDispatch();
   const SelectedUser: any | null = props.SelectedUser;
-
+  const [showPassword, setShowPassword] = useState(false);
   const [formState, setFormState] = useState<IUserFormState>({
     role: { error: "", value: SelectedUser.role || "" },
     email: { error: "", value: SelectedUser.email || "" },
@@ -39,16 +39,29 @@ const UserManagementForm = (props: any): JSX.Element => {
     userPicture: { error: "", value: SelectedUser.userPicture || "" },
     totalInvested: { error: "", value: SelectedUser.totalInvested || 0 },
     otp: { error: "", value: SelectedUser.otp || "" },
-    isProfileComplete: { error: "", value: SelectedUser.isProfileComplete || false },
+    isProfileComplete: {
+      error: "",
+      value: SelectedUser.isProfileComplete || false,
+    },
     currency: { error: "", value: SelectedUser.currency || "" },
     joinedOn: { error: "", value: SelectedUser.joinedOn || "" },
     profileStatus: { error: "", value: SelectedUser.profileStatus || "" },
     phoneNumber: { error: "", value: SelectedUser.phoneNumber || "" },
-    isPhoneNumberVerified: { error: "", value: SelectedUser.isPhoneNumberVerified || false },
+    isPhoneNumberVerified: {
+      error: "",
+      value: SelectedUser.isPhoneNumberVerified || false,
+    },
   });
 
-  function hasFormValueChanged(model: { field: keyof IUserFormState, error: string, value: any }): void {
-    setFormState({ ...formState, [model.field]: { error: model.error, value: model.value } });
+  function hasFormValueChanged(model: {
+    field: keyof IUserFormState;
+    error: string;
+    value: any;
+  }): void {
+    setFormState({
+      ...formState,
+      [model.field]: { error: model.error, value: model.value },
+    });
   }
 
   function saveUser(e: FormEvent<HTMLFormElement>): void {
@@ -90,17 +103,25 @@ const UserManagementForm = (props: any): JSX.Element => {
   //   }
   // }
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle password visibility
+  };
 
   async function saveForm(formState: IUserFormState): Promise<void> {
     if (SelectedUser) {
-      try {
+      try {        
+        //https://backend-tradex.onrender.com/admin/users/${SelectedUser._id}
+        //
         const url = `https://backend-tradex.onrender.com/admin/users/${SelectedUser._id}`;
-
+        
         // Create a plain object with the form values.
-        const bodyData = Object.entries(formState).reduce((acc, [key, field]) => {
-          acc[key] = field.value;
-          return acc;
-        }, {} as Record<string, any>);
+        const bodyData = Object.entries(formState).reduce(
+          (acc, [key, field]) => {
+            acc[key] = field.value;
+            return acc;
+          },
+          {} as Record<string, any>
+        );
 
         const response = await fetch(url, {
           method: "PUT",
@@ -112,7 +133,13 @@ const UserManagementForm = (props: any): JSX.Element => {
 
         if (response.ok) {
           props.onHide();
-          dispatch(addNotification("User updated", `User ${formState.fullName.value} updated successfully`));
+          dispatch(
+            addNotification(
+              "User updated",
+              `User ${formState.fullName.value} updated successfully`
+            )
+          );
+          window.location.reload(); 
         } else {
           throw new Error("Failed to update user");
         }
@@ -122,7 +149,6 @@ const UserManagementForm = (props: any): JSX.Element => {
       }
     }
   }
-
 
   function cancelForm(): void {
     // Implement cancellation logic here
@@ -134,7 +160,9 @@ const UserManagementForm = (props: any): JSX.Element => {
   }
 
   function isFormInvalid(): boolean {
-    return Object.values(formState).some(field => field.error || !field.value);
+    return Object.values(formState).some(
+      (field) => field.error || !field.value
+    );
   }
 
   return (
@@ -181,9 +209,21 @@ const UserManagementForm = (props: any): JSX.Element => {
                     required={false}
                     label="Password"
                     placeholder="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"} // Dynamically change type
                   />
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? (
+                      <i className="fas fa-eye-slash"></i>
+                    ) : (
+                      <i className="fas fa-eye"></i>
+                    )}
+                  </button>
                 </div>
+
                 <div className="form-group col-md-6">
                   <NumberInput
                     id="input_wallet"
@@ -245,7 +285,12 @@ const UserManagementForm = (props: any): JSX.Element => {
               </div>
 
               {/* <button className="btn btn-danger" onClick={() => cancelForm()}>Cancel</button> */}
-              <button type="submit" className={`btn btn-success left-margin ${getDisabledClass()}`}>Save</button>
+              <button
+                type="submit"
+                className={`btn btn-success left-margin ${getDisabledClass()}`}
+              >
+                Save
+              </button>
             </form>
           </div>
         </div>

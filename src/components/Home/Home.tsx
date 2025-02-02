@@ -103,7 +103,7 @@ const Home: React.FC = () => {
                     <tr key={stock._id}>
                       <td className="unique-table-data">{stock.stockName}</td>
                       <td className="unique-table-data">{stock.symbol}</td>
-                      <td className="unique-table-data">₹{stock.totalAmount.toFixed(2)}</td>
+                      <td className="unique-table-data">₹{stock.totalAmount ? stock.totalAmount.toFixed(2) : "0.00"}</td>
                     </tr>
                   ))}
                 </tbody>

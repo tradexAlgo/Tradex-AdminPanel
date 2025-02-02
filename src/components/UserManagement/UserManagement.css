@@ -32,3 +32,27 @@
 .selected {
     background-color:lavender;
 }
+
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 49px;
+    bottom: -15px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: 18px;
+  }
+  
+  .password-toggle:hover {
+    color: #007bff;
+  }
+  

@@ -6,40 +6,71 @@ import { IUser } from "../../store/models/user.interface";
 export type userListProps = {
   onSelect?: (user: IUser) => void;
   children?: React.ReactNode;
+  onSelectDelete?: (user: IUser) => void;
 };
 
 function UserManagementList(props: any): JSX.Element {
   // Assuming you have a user state similar to the product state
   const users: any = useSelector((state: IStateType) => state.users);
-  console.log("props.SelectedUserprops.SelectedUser", props.SelectedUser)
-  const userElements: (JSX.Element | null)[] = props.users.map((user: any, i: any) => {
-    if (!user) { return null; }
-    return (
-      <tr className={`table-row ${(props.SelectedUser && props.SelectedUser.id === user.id) ? "selected" : ""}`}
-        // onClick={() => {
-        //   if (props.onSelect) props.onSelect(user);
-        // }}
-        key={`user_${user.id}`}>
-        <th scope="row">{i + 1}</th>
-        <td>{user.fullName}</td>
-        <td>{user.email}</td>
-        <td>₹{user.wallet}</td>
-        <td>{new Date(user.joinedOn).toLocaleDateString()}</td>
-        <div className="mT10 btnStyle">
-          <button className="btn btn-success btn-green" onClick={() => {
-            if (props.onSelect) props.onSelect(user);
-          }}>
-            <i className="fas fa fa-pen"></i>
+  console.log("props.SelectedUserprops.SelectedUser", props.SelectedUser);
+  const userElements: (JSX.Element | null)[] = props.users.map(
+    (user: any, i: any) => {
+      if (!user) {
+        return null;
+      }
+      return (
+        <tr
+          className={`table-row ${
+            props.SelectedUser && props.SelectedUser.id === user.id
+              ? "selected"
+              : ""
+          }`}
+          // onClick={() => {
+          //   if (props.onSelect) props.onSelect(user);
+          // }}
+          key={`user_${user.id}`}
+        >
+          <th scope="row">{i + 1}</th>
+          <td>{user.fullName}</td>
+          <td>{user.email}</td>
+          <td>₹{user.wallet}</td>
+          <td>{new Date(user.createdAt).toLocaleString()}</td>
+          <div className="mT10 btnStyle">
+            <button
+              className="btn btn-success btn-green"
+              onClick={() => {
+                if (props.onSelect) props.onSelect(user);
+              }}
+            >
+              <i className="fas fa fa-pen"></i>
+            </button>
+            <button
+              className="btn btn-success btn-red"
+              onClick={() => {
+                if (props.onSelectDelete) props.onSelectDelete(user);
+              }}
+            >
+              <i className="fas fa fa-times"></i>
+            </button>
+            <button
+            className={`btn ${user.active ? "btn-success" : "btn-danger"}`} // Use user.active here
+            onClick={() => {
+              console.log("Button clicked, user ID:", user._id);
+              if (props.onToggle) {
+                props.onToggle(user._id); // Pass user._id to parent
+              } else {
+                console.error("onToggle is undefined!");
+              }
+            }}
+          >
+            {user.active ? "Active" : "Inactive"} 
+            <i className={`fas ${user.active ? "fa-check-circle" : "fa-times-circle"}`}></i>
           </button>
-          <button className="btn btn-success btn-red" onClick={() => {
-            if (props.onSelectDelete) props.onSelectDelete(user);
-          }} >
-            <i className="fas fa fa-times"></i>
-          </button>
-        </div>
-      </tr>
-    );
-  });
+          </div>
+        </tr>
+      );
+    }
+  );
 
   return (
     <div className="table-responsive portlet">
@@ -54,9 +85,7 @@ function UserManagementList(props: any): JSX.Element {
             <th scope="col">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {userElements}
-        </tbody>
+        <tbody>{userElements}</tbody>
       </table>
     </div>
   );

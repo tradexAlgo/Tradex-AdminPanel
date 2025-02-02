@@ -2,13 +2,26 @@ import { IUserState, IActionBase } from "../models/root.interface";
 import { ADD_ADMIN, REMOVE_ADMIN } from "../actions/users.action";
 
 const initialState: IUserState = {
-    users: [
-        { id: 1, firstName: "John", lastName: "Smith", email: "jsmith@em.pl", },
-        { id: 2, firstName: "Jannice", lastName: "Bing", email: "ohmy@fr.pl" }
-    ],
-    admins: [
-        { id: 3, firstName: "Jannet", lastName: "Crock", email: "jcrock@em.pl" },
-    ]
+     users : [
+        {
+            id: 1, firstName: "John", lastName: "Smith", email: "jsmith@em.pl", active: true,
+            _id: undefined,
+            isActive: undefined
+        },
+        {
+            id: 2, firstName: "Jannice", lastName: "Bing", email: "ohmy@fr.pl", active: false,
+            _id: undefined,
+            isActive: undefined
+        }
+      ],
+      
+       admins : [
+        {
+            id: 3, firstName: "Jannet", lastName: "Crock", email: "jcrock@em.pl", active: true,
+            _id: undefined,
+            isActive: undefined
+        }
+      ]      
 };
 
 function userReducer(state: IUserState = initialState, action: IActionBase): IUserState {
