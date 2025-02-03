@@ -14,9 +14,8 @@ import IntroManagement from "../IntroManagement/IntroManagement";
 import DepositManagement from "../DepositManagement/DepositManagement";
 import WithdrawManagement from "../WithdrawManagement/WithdrawManagement";
 import PaymentDetails from "../PaymentDetails/PaymentDetails";
-
+//admin
 const Admin: React.FC = () => {
-
   return (
     <Fragment>
       <Notifications />
